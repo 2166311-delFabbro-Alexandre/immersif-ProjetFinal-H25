@@ -33,7 +33,7 @@ public class TirCanon : MonoBehaviour
 
     // Force d'impulsion du projectile
     [SerializeField]
-    public float projectileForce = 12000f;
+    public float projectileForce = 1000f;
 
     // Temps de recharge entre les tirs
     [SerializeField]
