@@ -1,44 +1,54 @@
 using System;
 using UnityEngine;
 
+/// <summary>
+/// Classe permettant de contrôler la rotation du canon.
+/// 
+/// Auteur: Alexandre del Fabbro
+/// Inspiré du code d'OpenAi - ChatGPT - [Modèle massif de langage] - chat.openai.com - [Consulté le 28 avril 2025]
+/// </summary>
 public class ControleCanon: MonoBehaviour
 {
+    
     [SerializeField]
-    public Transform manetteCanon; // pour la rotation de la manette
+    // La manette de contrôle du canon
+    public Transform manetteCanon;
+    // Le canon à contrôler
     public Transform cannonTransform;
 
-    public float maxPitchAngle = 30f;   // Max up/down movement
-    public float maxYawAngle = 45f;     // Max left/right movement
-    public float rotationSpeed = 5f;    // Smoothness of cannon rotation
+    [Header("Paramètres de rotation")]
+    public float maxAngleHautBas = 45f;
+    public float maxAngleGaucheDroite = 45f;
+    public float vitesseRotation = 5f;
 
-    private Vector3 initialCannonRotation;
+    private Vector3 rotationInitialeCanon;
 
     void Start()
     {
-        if (cannonTransform == null)
-            cannonTransform = transform;
+        // Le transform du canon
+        cannonTransform = transform;
 
-        // Save the starting rotation
-        initialCannonRotation = cannonTransform.localEulerAngles;
+        // La rotation initiale du canon
+        rotationInitialeCanon = cannonTransform.localEulerAngles;
     }
 
     void Update()
     {
-        // Get stick tilt
+        // Récupérer la rotation de la manette
         Vector3 localStickRotation = manetteCanon.localRotation.eulerAngles;
 
-        // Fix weird Euler angles (>180)
+        // Convertir les angles de rotation de 0-360 à -180-180
         float stickX = (localStickRotation.x > 180) ? localStickRotation.x - 360 : localStickRotation.x;
         float stickZ = (localStickRotation.z > 180) ? localStickRotation.z - 360 : localStickRotation.z;
 
-        // Map stick tilt to cannon movement
-        float pitch = Mathf.Clamp(stickX, -maxPitchAngle, maxPitchAngle);
-        float yaw = Mathf.Clamp(-stickZ, -maxYawAngle, maxYawAngle);
+        // Assigner les angles de rotation du canon
+        float pitch = Mathf.Clamp(stickX, -maxAngleHautBas, maxAngleHautBas);
+        float yaw = Mathf.Clamp(-stickZ, -maxAngleGaucheDroite, maxAngleGaucheDroite);
 
-        // Target rotation
-        Vector3 targetRotation = new Vector3(initialCannonRotation.x + pitch, initialCannonRotation.y + yaw, initialCannonRotation.z);
+        // La rotation cible du canon
+        Vector3 targetRotation = new Vector3(rotationInitialeCanon.x + pitch, rotationInitialeCanon.y + yaw, rotationInitialeCanon.z);
 
-        // Smoothly rotate the cannon
-        cannonTransform.localRotation = Quaternion.Lerp(cannonTransform.localRotation, Quaternion.Euler(targetRotation), Time.deltaTime * rotationSpeed);
+        // Rotation du canon par rapport à la vitesse de rotation
+        cannonTransform.localRotation = Quaternion.Lerp(cannonTransform.localRotation, Quaternion.Euler(targetRotation), Time.deltaTime * vitesseRotation);
     }
 }

@@ -23,6 +23,6 @@ public class AjusterPositionCamera : MonoBehaviour
 
         // Place le rig à la position du siège
         transform.position = positionCamera.position;
-        transform.rotation = positionCamera.rotation; // Optionnel : aligne la vue
+        transform.rotation = positionCamera.rotation;
     }
 }
